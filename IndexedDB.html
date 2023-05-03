@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello World IndexedDB</title>
+</head>
+<body>
+
+	<h1>Hello World</h1>
+
+	<script>
+		// open the database
+		let request = indexedDB.open("MyDatabase", 1);
+
+		// handle errors
+		request.onerror = function(event) {
+			console.log("Database error: " + event.target.errorCode);
+		};
+
+		// create object store
+		request.onupgradeneeded = function(event) {
+			let db = event.target.result;
+			let objectStore = db.createObjectStore("MyObjectStore", { keyPath: "id" });
+			console.log("Object store created");
+		};
+
+		// write to object store
+		request.onsuccess = function(event) {
+			let db = event.target.result;
+			let transaction = db.transaction(["MyObjectStore"], "readwrite");
+			let objectStore = transaction.objectStore("MyObjectStore");
+			let newItem = { id: 1, message: "Hello World" };
+			let request = objectStore.add(newItem);
+			console.log("Added new item to object store");
+		};
+	</script>
+
+</body>
+</html>
